@@ -1,19 +1,19 @@
 require 'sawyer'
-require 'aptible/billforward/client/invoices'
-require 'pry'
+require 'aptible/billforward/serializer'
 
 module Aptible
   module BillForward
     class Client
       include BillForward::Defaults
-      include BillForward::Client::Invoices
+      attr_reader :agent
+      attr_reader :last_response
 
       def get(url, options = {})
         request :get, url, options
       end
 
-      def post(url, options = {})
-        request :post, url, options
+      def post(url, resource)
+        request :post, url, resource
       end
 
       def put(url, options = {})
@@ -32,25 +32,31 @@ module Aptible
         request :head, url, options
       end
 
-      private
-
-      def agent
+       def agent
         @agent ||= Sawyer::Agent.new(api_endpoint, sawyer_options) do |http|
           http.headers[:accept] = media_type
-          http.headers[:content_type] = 'application/json'
           http.headers[:user_agent] = user_agent
           http.headers[:authorization] = "Bearer #{access_token}"
         end
       end
 
+      private
+
       def sawyer_options
-        { faraday: Faraday.new(connection_options) }
+        {
+          faraday: Faraday.new(connection_options),
+          serializer: Aptible::BillForward::Serializer.any_json
+        }
       end
 
       def request(method, path, data, options = {})
-        path = URI::Parser.new.escape(path.to_s)
+        options[:headers] ||= {}
+        unless method == :get
+          options[:headers][:content_type] = 'application/json'
+        end
+
         @last_response = agent.call(method, path, data, options)
-        @last_response.data.results
+        @last_response.data
       end
     end
   end

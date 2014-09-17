@@ -18,3 +18,4 @@ module Aptible
 end
 
 require 'aptible/billforward/client'
+require 'aptible/billforward/resource'
