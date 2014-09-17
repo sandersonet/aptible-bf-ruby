@@ -1,17 +1,30 @@
 require 'logger'
+require 'aptible/billforward/exceptions'
 
 module Sawyer
   class Response
      def initialize(agent, res, options = {})
       @res = res
-      @agent   = agent
-      @status  = res.status
+      @agent = agent
+      @status = res.status
       @headers = res.headers
-      @env     = res.env
-      @data    = @headers[:content_type] =~ /json|msgpack/ ? process_data(@agent.decode_body(res.body)) : res.body
-      @rels    = process_rels
+      @env = res.env
+      @rels = process_rels
       @started = options[:sawyer_started]
-      @ended   = options[:sawyer_ended]
+      @ended = options[:sawyer_ended]
+      @data = if @headers[:content_type] =~ /json|msgpack/
+                process_data(@agent.decode_body(res.body))
+              else
+                res.body
+              end
+
+      if @status >= 400
+        raise Aptible::BillForward::ResponseError.new(@status.to_s,
+          response: @res,
+          body: @data,
+          cause: @status
+        )
+      end
     end
 
     def process_data(data)

@@ -17,6 +17,12 @@ module Aptible
         body[hash.class.basename.underscore.camelize(:lower).pluralize] = [hash]
         body
       end
+
+      def time_field?(key, value)
+        time_fields = %w(created updated start stop initalPeriodStart
+                         currentPeriodStart currentPeriodEnd)
+        value && time_fields.include?(key)
+      end
     end
   end
 end

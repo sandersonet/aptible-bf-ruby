@@ -8,8 +8,8 @@ module Aptible
       attr_reader :agent
       attr_reader :last_response
 
-      def get(url, options = {})
-        request :get, url, options
+      def get(url, query = {})
+        request :get, url, nil, { query: query }
       end
 
       def post(url, resource)
