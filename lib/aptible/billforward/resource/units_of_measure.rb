@@ -1,7 +1,7 @@
 module Aptible
   module BillForward
     class UnitOfMeasure < Resource
-      def self.collection_path
+      def self.basename
         'units-of-measure'
       end
     end

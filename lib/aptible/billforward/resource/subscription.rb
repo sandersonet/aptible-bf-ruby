@@ -2,15 +2,15 @@ module Aptible
   module BillForward
     class Subscription < Resource
       def usage_periods(params = {})
-        Aptible::BillForward::UsagePeriod.by_subscription_id(
-          params.merge(subscription_id: id)
-        )
+        Aptible::BillForward::UsagePeriod.by_subscription_id(id)
       end
 
       def usage_sessions(params = {})
-        Aptible::BillForward::UsageSession.by_subscription_id(
-          params.merge(subscription_id: id)
-        )
+        Aptible::BillForward::UsageSession.by_subscription_id(id)
+      end
+
+      def usage(params = {})
+        Aptible::BillForward::Usage.by_subscription_id(id)
       end
 
       def create_usage_session(params = {})

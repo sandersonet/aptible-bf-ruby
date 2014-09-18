@@ -38,6 +38,25 @@ module Aptible
       def update(params = {})
         client.put href, self.new(client.agent, params)
       end
+
+      def invoice
+        return nil unless invoiceID
+        Aptible::BillForward::Invoice.find(invoiceID)
+      end
+
+      def subscription
+        return nil unless subscriptionID
+        Aptible::BillForward::Subscription.find(subscriptionID)
+      end
+
+      # Get
+      def self.by_subscription_id(subscriptionID, options = {})
+        state = options[:active] ? '/active' : ''
+        client.get(
+          "#{collection_path}/#{subscriptionID}#{state}",
+          { order: 'DESC', order_by: 'start' }
+        )
+      end
     end
   end
 end
@@ -45,6 +64,7 @@ end
 require 'aptible/billforward/resource/account'
 require 'aptible/billforward/resource/invoice'
 require 'aptible/billforward/resource/subscription'
+require 'aptible/billforward/resource/usage'
 require 'aptible/billforward/resource/usage_session'
 require 'aptible/billforward/resource/usage_period'
 require 'aptible/billforward/resource/units_of_measure'
