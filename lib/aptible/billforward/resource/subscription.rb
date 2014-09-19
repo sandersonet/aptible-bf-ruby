@@ -1,6 +1,10 @@
 module Aptible
   module BillForward
     class Subscription < Resource
+      def serialize
+        to_attrs
+      end
+
       def usage_periods(params = {})
         Aptible::BillForward::UsagePeriod.by_subscription_id(id)
       end
@@ -19,6 +23,10 @@ module Aptible
           sessionID: Aptible::BillForward::UsageSession.generate_session_id,
         )
         Aptible::BillForward::UsageSession.create(usage_params)
+      end
+
+      def self.by_account_id(account_id, params = {})
+        client.get "#{collection_path}/account/#{account_id}", params
       end
     end
   end

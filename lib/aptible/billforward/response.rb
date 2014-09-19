@@ -17,6 +17,7 @@ module Sawyer
               else
                 res.body
               end
+
       if @status >= 400
         raise Aptible::BillForward::ResponseError.new(@status.to_s,
           response: @res,

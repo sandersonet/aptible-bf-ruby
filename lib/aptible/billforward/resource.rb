@@ -49,13 +49,19 @@ module Aptible
         Aptible::BillForward::Subscription.find(subscriptionID)
       end
 
-      # Get
-      def self.by_subscription_id(subscriptionID, options = {})
+      def self.by_subscription_id(subscription_id, options = {})
         state = options[:active] ? '/active' : ''
         client.get(
-          "#{collection_path}/#{subscriptionID}#{state}",
+          "#{collection_path}/#{subscription_id}#{state}",
           { order: 'DESC', order_by: 'start' }
         )
+      end
+
+      def serialize
+        type = self.class.basename.underscore.camelize(:lower).pluralize
+        body = {}
+        body[type] = [to_attrs]
+        body
       end
     end
   end
@@ -63,8 +69,10 @@ end
 
 require 'aptible/billforward/resource/account'
 require 'aptible/billforward/resource/invoice'
+require 'aptible/billforward/resource/payment_method'
+require 'aptible/billforward/resource/product_rate_plan'
 require 'aptible/billforward/resource/subscription'
 require 'aptible/billforward/resource/usage'
-require 'aptible/billforward/resource/usage_session'
-require 'aptible/billforward/resource/usage_period'
 require 'aptible/billforward/resource/units_of_measure'
+require 'aptible/billforward/resource/usage_period'
+require 'aptible/billforward/resource/usage_session'

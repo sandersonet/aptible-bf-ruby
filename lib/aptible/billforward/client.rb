@@ -12,8 +12,8 @@ module Aptible
         request :get, url, nil, { query: query }
       end
 
-      def post(url, resource)
-        request :post, url, resource
+      def post(url, resource, query = {})
+        request :post, url, resource, { query: query }
       end
 
       def put(url, options = {})
