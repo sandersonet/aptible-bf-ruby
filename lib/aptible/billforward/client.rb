@@ -16,8 +16,8 @@ module Aptible
         request(:post, url, resource, { query: query }).first
       end
 
-      def put(url, options = {})
-        request :put, url, options
+      def put(url, resource, query = {})
+        request :put, url, resource
       end
 
       def patch(url, options = {})
@@ -50,7 +50,6 @@ module Aptible
       end
 
       def request(method, path, data, options = {})
-        binding.pry if method == :post
         options[:headers] ||= {}
         unless method == :get
           options[:headers][:content_type] = 'application/json'

@@ -24,6 +24,16 @@ module Aptible
       def subscriptions(params = {})
         Aptible::BillForward::Subscription.by_account_id(id, params)
       end
+
+      def bootstrap_active_subscription(params)
+        subscription = create_subscription params.slice(:productRatePlanID)
+        payment_method = Aptible::BillForward::PaymentMethod.find(
+          params[:payment_method_id]
+        )
+
+        subscription.link_payment_method payment_method
+        subscription.update({ state: 'AwaitingPayment' })
+      end
     end
   end
 end

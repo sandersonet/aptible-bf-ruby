@@ -35,6 +35,10 @@ module Aptible
       def self.by_account_id(account_id, params = {})
         client.get "#{collection_path}/account/#{account_id}", params
       end
+
+      def href
+        "#{self.class.collection_path}"
+      end
     end
   end
 end

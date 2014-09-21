@@ -19,6 +19,15 @@ module Aptible
         basename
       end
 
+      def update(params)
+        self.attrs = attrs.merge(params)
+        client.put href, self
+      end
+
+      def href
+        "#{self.class.collection_path}/#{id}"
+      end
+
       def self.basename
         name.split('::').last.underscore.dasherize.pluralize
       end
@@ -29,14 +38,6 @@ module Aptible
 
       def client
         @client ||= Aptible::BillForward::Client.new
-      end
-
-      def href
-        "#{collection_path}/#{id}"
-      end
-
-      def update(params = {})
-        client.put href, self.new(client.agent, params)
       end
 
       def invoice
