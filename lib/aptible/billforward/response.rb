@@ -4,6 +4,14 @@ require 'aptible/billforward/exceptions'
 module Sawyer
   class Response
      def initialize(agent, res, options = {})
+      if res.status >= 400
+        binding.pry
+        raise Aptible::BillForward::ResponseError.new(@status.to_s,
+          response: @res,
+          body: @data,
+          cause: @status
+        )
+      end
       @res = res
       @agent = agent
       @status = res.status
@@ -17,14 +25,6 @@ module Sawyer
               else
                 res.body
               end
-
-      if @status >= 400
-        raise Aptible::BillForward::ResponseError.new(@status.to_s,
-          response: @res,
-          body: @data,
-          cause: @status
-        )
-      end
     end
 
     def process_data(data)
@@ -42,3 +42,8 @@ module Sawyer
     end
   end
 end
+
+# {:errorType=>"ValidationError",
+#  :errorMessage=>
+#   "Validation Error - Entity: PaymentMethodSubscriptionLink Field: paymentMethodID Value: null Message: may not be null\nValidation Error - Entity: PaymentMethodSubscriptionLink Field: subscription Value: null Message: may not be null\n",
+#  :errorParameters=>["paymentMethodID", "subscription"]}

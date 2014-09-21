@@ -70,6 +70,7 @@ end
 require 'aptible/billforward/resource/account'
 require 'aptible/billforward/resource/invoice'
 require 'aptible/billforward/resource/payment_method'
+require 'aptible/billforward/resource/payment_method_subscription_link'
 require 'aptible/billforward/resource/product_rate_plan'
 require 'aptible/billforward/resource/subscription'
 require 'aptible/billforward/resource/usage'

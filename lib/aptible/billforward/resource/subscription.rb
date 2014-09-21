@@ -6,15 +6,16 @@ module Aptible
       end
 
       def usage_periods(params = {})
-        Aptible::BillForward::UsagePeriod.by_subscription_id(id)
+        @usage_periods ||= Aptible::BillForward::UsagePeriod.by_subscription_id(id)
       end
 
       def usage_sessions(params = {})
+        @usage_sessions ||=
         Aptible::BillForward::UsageSession.by_subscription_id(id)
       end
 
       def usage(params = {})
-        Aptible::BillForward::Usage.by_subscription_id(id)
+        @usage ||= Aptible::BillForward::Usage.by_subscription_id(id)
       end
 
       def create_usage_session(params = {})
@@ -23,6 +24,12 @@ module Aptible
           sessionID: Aptible::BillForward::UsageSession.generate_session_id,
         )
         Aptible::BillForward::UsageSession.create(usage_params)
+      end
+
+      def link_payment_method(payment_method)
+        Aptible::BillForward::PaymentMethodSubscriptionLink.create(
+          { subscriptionID: id, paymentMethodID: payment_method.id }
+        )
       end
 
       def self.by_account_id(account_id, params = {})
